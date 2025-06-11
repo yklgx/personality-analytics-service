@@ -192,3 +192,20 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+# Codespace specific
+.devcontainer/
+.vscode/settings.json
+
+# Model files
+models/trained/*
+!models/trained/.gitkeep
+
+# Data files  
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
