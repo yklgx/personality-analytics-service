@@ -1,0 +1,96 @@
+[
+    {
+        "id": "2b4c691ce2190f2b",
+        "type": "tab",
+        "label": "API 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "90f1652e3a231c3e",
+        "type": "inject",
+        "z": "2b4c691ce2190f2b",
+        "name": "Test Prediction",
+        "props": [
+            {
+                "p": "timestamp ",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 100,
+        "y": 80,
+        "wires": [
+            [
+                "71c18291861b7ac0"
+            ]
+        ]
+    },
+    {
+        "id": "71c18291861b7ac0",
+        "type": "function",
+        "z": "2b4c691ce2190f2b",
+        "name": "Create Predict Payload",
+        "func": "msg.headers = {\n    'Content-Type': 'application/json'\n};\n\nmsg.payload = {\n    \"Openness\": 7.1,\n    \"Conscientiousness\": 6.8,\n    \"Extraversion\": 5.2,\n    \"Agreeableness\": 8.0,\n    \"Neuroticism\": 4.5\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 140,
+        "wires": [
+            [
+                "83bbcb04264f21dc"
+            ]
+        ]
+    },
+    {
+        "id": "83bbcb04264f21dc",
+        "type": "http request",
+        "z": "2b4c691ce2190f2b",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:8080/api/v1/predict",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 510,
+        "y": 80,
+        "wires": [
+            [
+                "aa780ac946431edb"
+            ]
+        ]
+    },
+    {
+        "id": "aa780ac946431edb",
+        "type": "debug",
+        "z": "2b4c691ce2190f2b",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 140,
+        "wires": []
+    }
+]

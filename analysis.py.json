@@ -1,0 +1,72 @@
+[
+    {
+        "id": "6431445a3887aec8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "651e46ec6cb4b33a",
+        "type": "inject",
+        "z": "6431445a3887aec8",
+        "name": "Train Model",
+        "props": [
+            {
+                "p": "payload type",
+                "v": "string",
+                "vt": "str"
+            },
+            {
+                "p": "Value",
+                "v": "Start",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "262a9cdb9bf4040c"
+            ]
+        ]
+    },
+    {
+        "id": "262a9cdb9bf4040c",
+        "type": "python",
+        "z": "6431445a3887aec8",
+        "name": "",
+        "pythonCode": "import pandas as pd\n\n# Φόρτωση δεδομένων από τον φάκελο \"data\"\ndf = pd.read_csv(\"ml_pipeline/personality_dataset.csv\")\n\n# Πρώτες γραμμές\nprint(\" Πρώτες γραμμές:\")\nprint(df.head())\n\n# Πληροφορίες για τύπους δεδομένων\nprint(\"\\n Πληροφορίες:\")\nprint(df.info())\n\n# Πόσες κενές τιμές έχει κάθε στήλη\nprint(\"\\n Κενές τιμές:\")\nprint(df.isnull().sum())\n\ndf = df.dropna()\n\n# Μετατροπή των \"Yes/No\" σε 1/0\ndf[\"Stage_fear\"] = df[\"Stage_fear\"].map({\"Yes\": 1, \"No\": 0})\ndf[\"Drained_after_socializing\"] = df[\"Drained_after_socializing\"].map({\"Yes\": 1, \"No\": 0})\n\n# Μετατροπή του \"Personality\" σε 0 (Introvert) και 1 (Extrovert)\ndf[\"Personality\"] = df[\"Personality\"].map({\"Introvert\": 0, \"Extrovert\": 1})\n\nprint(\"\\n Μοναδικές τιμές στο Personality:\")\nprint(df[\"Personality\"].value_counts())\n\nprint(\"\\n Τύποι δεδομένων μετά την κωδικοποίηση:\")\nprint(df.dtypes)\n\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score, classification_report, confusion_matrix\n\n# Χωρισμός χαρακτηριστικών (X) και στόχου (y)\nX = df.drop(\"Personality\", axis=1)\ny = df[\"Personality\"]\n\n# Διαχωρισμός σε training και testing sets (80% / 20%)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n\n# Δημιουργία και εκπαίδευση μοντέλου\nmodel = LogisticRegression(max_iter=1000)\nmodel.fit(X_train, y_train)\n\n# Πρόβλεψη στο test set\ny_pred = model.predict(X_test)\n\n# Αξιολόγηση μοντέλου\nresult = {\n    \"accuracy\": accuracy_score(y_test, y_pred),\n    \"confusion_matrix\": confusion_matrix(y_test, y_pred).tolist(),\n    \"classification_report\": classification_report(y_test, y_pred, output_dict=True)\n}\nreturn result\n\n\nimport joblib\njoblib.dump(model, \"personality_model.pkl\")",
+        "pipModules": "",
+        "x": 290,
+        "y": 60,
+        "wires": [
+            [
+                "f0b3aff3d84dc6ec"
+            ]
+        ]
+    },
+    {
+        "id": "f0b3aff3d84dc6ec",
+        "type": "debug",
+        "z": "6431445a3887aec8",
+        "name": "Results",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 60,
+        "wires": []
+    }
+]
