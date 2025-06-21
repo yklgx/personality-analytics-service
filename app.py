@@ -1,10 +1,4 @@
-"""
-Personality Analytics API
-Made by: 3 junior developers learning Flask
-This is our first real API project!
-"""
 
-# Import the things we need
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
@@ -46,7 +40,7 @@ def home():
         'how_to_use': 'Visit /api/v1/docs for help'
     })
 
-# Health check - tells us if the API is working
+# Health check 
 @app.route('/health')
 def health_check():
     """
@@ -61,7 +55,7 @@ def health_check():
         'environment': 'development'
     })
 
-# Main prediction endpoint - this is where the magic happens!
+# Main prediction endpoint 
 @app.route('/api/v1/predict', methods=['POST'])
 def predict_personality():
     """
@@ -128,13 +122,13 @@ def predict_personality():
                         'valid_range': '0 to 10'
                     }), 400
         
-        # Our simple prediction logic (we're still learning ML!)
-        # For now, we use basic rules to predict personality
+        
+        # Rrules to predict personality
         
         extraversion_score = data.get('Extraversion', 5)
         openness_score = data.get('Openness', 5)
         
-        # Simple calculation - we'll make this smarter later!
+        # Simple calculation 
         personality_calculation = (extraversion_score * 0.6) + (openness_score * 0.4)
         
         # Decide if person is Introvert or Extrovert
@@ -167,13 +161,13 @@ def predict_personality():
             'message': 'Prediction completed successfully!'
         }
         
-        # Print to console for debugging (beginners love print statements!)
+        # Print to console for debugging 
         print(f"New prediction: {predicted_personality} with {confidence:.2f} confidence")
         
         return jsonify(result), 200
         
     except Exception as e:
-        # Something went wrong - let's handle it nicely
+        # Something went wrong 
         print(f"Error in prediction: {str(e)}")  # Debug print
         return jsonify({
             'error': 'Something went wrong with the prediction',
@@ -182,7 +176,7 @@ def predict_personality():
             'status': 'error'
         }), 500
 
-# Batch prediction - predict multiple people at once!
+# Batch prediction 
 @app.route('/api/v1/predict/batch', methods=['POST'])
 def batch_predict():
     """
@@ -213,8 +207,8 @@ def batch_predict():
                 'received_type': str(type(samples))
             }), 400
         
-        # Limit batch size (we don't want to crash our server!)
-        max_batch_size = 50  # Start small as beginners
+        # Limit batch size 
+        max_batch_size = 50  
         if len(samples) > max_batch_size:
             return jsonify({
                 'error': f'Too many samples! Maximum is {max_batch_size}',
@@ -252,7 +246,7 @@ def batch_predict():
                 successful_predictions += 1
                 
             except Exception as e:
-                # If one sample fails, keep going with the rest
+                # If one sample fails vontinue with the rest
                 predictions.append({
                     'sample_number': i + 1,
                     'status': 'failed',
@@ -286,7 +280,7 @@ def batch_predict():
             'message': 'Please check your input format and try again'
         }), 500
 
-# Input validation endpoint - check if data is good before predicting
+# Input validation endpoint 
 @app.route('/api/v1/validate', methods=['POST'])
 def validate_input():
     """
